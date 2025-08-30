@@ -1,0 +1,50 @@
+### UI Feedback Report for the Gradio-Based Frontend
+
+#### Usability Issues:
+1. **Label Clarity**:
+   - **Issue**: The `Textbox` labels for creating an account and displaying outputs are good, but they could benefit from clearer contextual hints.
+   - **Recommendation**: Include helper text under the labels to guide the user on what input format is expected (e.g., "User ID should be unique and contain no spaces"). 
+
+2. **Transaction Feedback**:
+   - **Issue**: When performing transactions (like buy/sell), the feedback does not confirm success or failure adequately.
+   - **Recommendation**: Change the output display to include the success message in a prominent way, perhaps by using a color code or icon (like a checkmark for success and an error icon for failure).
+
+3. **Button Accessibility**:
+   - **Issue**: Some buttons may be visually overwhelming due to their frequency and position on-screen.
+   - **Recommendation**: Arrange buttons in a tab or collapsible menu to group related actions together (e.g., all transaction-related buttons in one area).
+
+#### Accessibility Issues:
+1. **Focus Indicators**:
+   - **Issue**: There is insufficient visual focus indication for keyboard navigation when users tab through elements.
+   - **Recommendation**: Ensure all interactive elements (like buttons and textboxes) have a clear focus outline using `:focus` CSS styles.
+
+2. **Text Contrast**:
+   - **Issue**: The color of the text output (like in `create_output`, `deposit_output`) may not meet the WCAG 2.1 standards for color contrast.
+   - **Recommendation**: Adjust the color scheme so that the text has a contrast ratio of at least 4.5:1 against the background.
+
+3. **Screen Reader Compatibility**:
+   - **Issue**: Not all elements have accessible names (e.g., buttons may be read as "button" without a name).
+   - **Recommendation**: Implement `aria-labels` for buttons to provide a descriptive name for screen reader users.
+
+#### Correctness Issues:
+1. **Error Handling**:
+   - **Issue**: The application does not handle backend errors or exceptions gracefully, resulting in potential crashes.
+   - **Recommendation**: Implement try-except blocks around backend operations to catch exceptions and display user-friendly error messages.
+
+2. **Input Validation**:
+   - **Issue**: Input fields (like `initial_deposit` and transaction amounts) allow for potential misuse (e.g., negative values or non-numeric inputs).
+   - **Recommendation**: Include frontend validation to prevent submission unless the inputs meet specified conditions (e.g., positive numbers).
+
+3. **Redundant Button Clicks**:
+   - **Issue**: Buttons can be repeatedly clicked causing multiple transactions to be triggered unintentionally.
+   - **Recommendation**: Disable buttons immediately after clicking until the operation completes, or employ a loading state indicator.
+
+### Communication to Engineering Team:
+- These identified usability and accessibility issues significantly impact the user experience of the Gradio-based frontend. Please prioritize addressing these in the next development cycle to ensure a more inclusive and user-friendly platform. 
+
+Actions to be taken:
+1. Revise label and button designs based on user feedback.
+2. Ensure that all elements meet WCAG guidelines for accessibility.
+3. Enhance error handling and input validation for a frictionless user experience.
+
+This approach will not only improve the overall usability of the platform but also enhance satisfaction and engagement from diverse user demographics.

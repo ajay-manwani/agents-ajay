@@ -1,0 +1,225 @@
+```python
+# accounts.py
+
+class Account:
+    """
+    A class to represent a user account in a trading simulation platform.
+
+    Attributes
+    ----------
+    user_id : str
+        Unique identifier for the user.
+    balance : float
+        The current balance of the user's account.
+    portfolio : dict
+        A dictionary holding the stocks the user has and their respective quantities.
+    transactions : list
+        A list to record the transactions made by the user.
+
+    Methods
+    -------
+    create_account(user_id: str) -> None:
+        Initializes a new account with a user_id and sets balance to 0.
+
+    deposit(amount: float) -> None:
+        Increases the account balance by the deposited amount.
+
+    withdraw(amount: float) -> None:
+        Decreases the account balance by the withdrawn amount if funds are sufficient.
+
+    buy_shares(symbol: str, quantity: int) -> None:
+        Purchases shares of a stock and updates the balance and portfolio accordingly.
+
+    sell_shares(symbol: str, quantity: int) -> None:
+        Sells shares of a stock and updates the balance and portfolio accordingly.
+
+    calculate_portfolio_value() -> float:
+        Returns the total value of the user's portfolio based on current share prices.
+
+    calculate_profit_loss() -> float:
+        Returns the profit or loss from the user's initial deposit.
+
+    report_holdings() -> dict:
+        Returns a dictionary of the user's holdings at any point in time.
+
+    report_profit_loss() -> float:
+        Returns the current profit or loss for the user at any time.
+
+    list_transactions() -> list:
+        Returns a list of all transactions made by the user.
+    """
+
+    def __init__(self, user_id: str):
+        """
+        Initializes a new account for the user.
+
+        Parameters
+        ----------
+        user_id : str
+            Unique identifier for the user.
+        """
+        self.user_id = user_id
+        self.balance = 0.0
+        self.portfolio = {}
+        self.transactions = []
+
+    def deposit(self, amount: float) -> None:
+        """
+        Deposits an amount into the account.
+
+        Parameters
+        ----------
+        amount : float
+            The amount to deposit.
+        """
+        if amount <= 0:
+            raise ValueError("Deposit amount must be greater than zero.")
+        self.balance += amount
+        self.transactions.append(("Deposit", amount))
+
+    def withdraw(self, amount: float) -> None:
+        """
+        Withdraws an amount from the account if sufficient funds are available.
+
+        Parameters
+        ----------
+        amount : float
+            The amount to withdraw.
+        """
+        if amount <= 0:
+            raise ValueError("Withdrawal amount must be greater than zero.")
+        if amount > self.balance:
+            raise ValueError("Insufficient funds for withdrawal.")
+        self.balance -= amount
+        self.transactions.append(("Withdraw", amount))
+
+    def buy_shares(self, symbol: str, quantity: int) -> None:
+        """
+        Buys a specified quantity of shares for the given stock symbol if funds are sufficient.
+
+        Parameters
+        ----------
+        symbol : str
+            The stock symbol to buy shares of.
+        quantity : int
+            The number of shares to buy.
+        """
+        if quantity <= 0:
+            raise ValueError("Quantity must be greater than zero.")
+        price_per_share = get_share_price(symbol)
+        total_cost = price_per_share * quantity
+        if total_cost > self.balance:
+            raise ValueError("Insufficient funds to buy shares.")
+        
+        self.balance -= total_cost
+        self.portfolio[symbol] = self.portfolio.get(symbol, 0) + quantity
+        self.transactions.append(("Buy", symbol, quantity))
+
+    def sell_shares(self, symbol: str, quantity: int) -> None:
+        """
+        Sells a specified quantity of shares for the given stock symbol.
+
+        Parameters
+        ----------
+        symbol : str
+            The stock symbol to sell shares of.
+        quantity : int
+            The number of shares to sell.
+        """
+        if quantity <= 0:
+            raise ValueError("Quantity must be greater than zero.")
+        if symbol not in self.portfolio or self.portfolio[symbol] < quantity:
+            raise ValueError("Insufficient shares to sell.")
+        
+        price_per_share = get_share_price(symbol)
+        total_revenue = price_per_share * quantity
+        
+        self.balance += total_revenue
+        self.portfolio[symbol] -= quantity
+        if self.portfolio[symbol] == 0:
+            del self.portfolio[symbol]
+        
+        self.transactions.append(("Sell", symbol, quantity))
+
+    def calculate_portfolio_value(self) -> float:
+        """
+        Calculates the total value of the user's portfolio based on current share prices.
+
+        Returns
+        -------
+        float
+            The total value of the portfolio.
+        """
+        total_value = self.balance
+        for symbol, quantity in self.portfolio.items():
+            total_value += get_share_price(symbol) * quantity
+        return total_value
+
+    def calculate_profit_loss(self) -> float:
+        """
+        Calculates the profit or loss based on the initial deposit amount.
+
+        Returns
+        -------
+        float
+            The current profit or loss.
+        """
+        return self.calculate_portfolio_value() - sum(transaction[1] for transaction in self.transactions if transaction[0] == "Deposit")
+
+    def report_holdings(self) -> dict:
+        """
+        Reports the user's current holdings.
+
+        Returns
+        -------
+        dict
+            A dictionary with stock symbols and their respective quantities.
+        """
+        return self.portfolio
+
+    def report_profit_loss(self) -> float:
+        """
+        Reports the current profit or loss of the user.
+
+        Returns
+        -------
+        float
+            The current profit or loss.
+        """
+        return self.calculate_profit_loss()
+
+    def list_transactions(self) -> list:
+        """
+        Lists all transactions performed by the user.
+
+        Returns
+        -------
+        list
+            A list of transaction records.
+        """
+        return self.transactions
+
+# Placeholder for the external function that is assumed to exist
+def get_share_price(symbol: str) -> float:
+    """
+    Dummy implementation for getting share prices.
+    
+    Parameters
+    ----------
+    symbol : str
+        The stock symbol for which the price is requested.
+
+    Returns
+    -------
+    float
+        The current price of the share.
+    """
+    prices = {
+        "AAPL": 150.0,
+        "TSLA": 600.0,
+        "GOOGL": 2800.0
+    }
+    return prices.get(symbol, 0.0)
+```
+
+This design document describes a single self-contained Python module named `accounts.py`. It outlines the `Account` class, its attributes, and a comprehensive set of methods that enable account functionalities such as account creation, funds management, trading operations, and reporting. Each method includes its parameter expectations and works seamlessly with the `get_share_price` function for stock price retrieval. This document provides a clear and structured design for backend engineers to implement without needing further clarification.

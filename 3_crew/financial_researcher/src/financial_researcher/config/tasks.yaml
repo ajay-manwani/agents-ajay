@@ -15,6 +15,7 @@ research_task:
     and examples where relevant.
   agent: researcher
 
+
 analysis_task:
   description: >
     Analyze the research findings and create a comprehensive report on {company}.

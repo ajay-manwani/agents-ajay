@@ -1,0 +1,66 @@
+design_task:
+  description: >
+    Based on the requirement "{requirement}", produce a complete software design
+    for a single self-contained Python module named "{module_name}" containing a
+    class "{class_name}". Include method signatures, responsibilities, and data flow.
+    The design should be detailed enough for a backend engineer to implement without
+    further clarification.
+  expected_output: >
+    A detailed design document describing the module structure, class methods,
+    and interactions, ready for backend implementation.
+  output_file: "output/design_{module_name}.txt"
+  agent: engineering_lead
+
+backend_task:
+  description: >
+    Using the following design as context:
+    {design_task.output}
+
+    Implement the backend Python module "{module_name}.py" with a class
+    "{class_name}" according to the provided design and requirement "{requirement}".
+    Follow PEP8, include docstrings, and keep the module self-contained with no
+    external dependencies beyond the Python standard library. Ensure the code is
+    functional and ready for integration.
+  expected_output: >
+    A complete Python file implementing the backend logic as per the design.
+  output_file: "output/{module_name}.py"
+  agent: backend_engineer
+
+frontend_task:
+  description: >
+    Using the backend implementation as context:
+    {backend_task.output}
+
+    Create a Gradio-based frontend that interfaces with the backend module
+    "{module_name}" and class "{class_name}" to fulfill the requirement "{requirement}".
+    The UI should be functional, minimal, and demonstrate the backend's capabilities.
+  expected_output: >
+    A Python file implementing the Gradio UI, importing and using the backend module.
+  output_file: "output/frontend_{module_name}.py"
+  agent: frontend_engineer
+
+test_task:
+  description: >
+    Using the backend implementation as context:
+    {backend_task.output}
+
+    Write Python unit tests for the module "{module_name}.py" and class "{class_name}".
+    Tests should cover all public methods, normal cases, edge cases, and error handling.
+    Use unittest or pytest, and ensure the tests run without internet access.
+  expected_output: >
+    A Python test file named "test_{module_name}.py" containing unit tests.
+  output_file: "output/test_{module_name}.py"
+  agent: test_engineer
+
+ui_validation_task:
+  description: >
+    Review the Gradio-based frontend implementation:
+    {frontend_task.output}
+
+    Check for usability, accessibility, and correctness issues. Provide feedback and
+    actionable suggestions for improvement. Communicate any issues to the backend and
+    frontend engineers for resolution.
+  expected_output: >
+    A feedback report listing UI issues and recommended improvements.
+  output_file: "output/ui_validation_feedback.txt"
+  agent: ui_validation_engineer

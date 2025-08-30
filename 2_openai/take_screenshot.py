@@ -1,0 +1,33 @@
+import os
+import time
+import pyautogui
+from PIL import ImageGrab
+
+# Function to take a screenshot
+def take_screenshot(filename):
+    # Allow some time for the screen to be prepared
+    time.sleep(2)
+    screenshot = ImageGrab.grab()
+    screenshot.save(filename)
+
+# Function to process the files in the given folder
+def process_files_in_directory(folder_path):
+    try:
+        files = os.listdir(folder_path)
+        for file_name in files:
+            file_path = os.path.join(folder_path, file_name)
+            # Check for specific file types (e.g., .txt, .docx)
+            if file_name.endswith('.txt') or file_name.endswith('.docx'):
+                os.startfile(file_path)  # Open the file
+                screenshot_filename = f'screenshot_{file_name}.png'
+                take_screenshot(screenshot_filename)  # Take a screenshot
+                # Close the file (this step may vary based on application)
+                os.system(f'taskkill /f /im {file_name}')  # Be sure to adjust this as necessary
+        return 'Screenshots have been taken for all files in the folder.'
+    except Exception as e:
+        return str(e)
+
+# Example usage (to run locally)
+folder_path = input('Enter the folder path: ')
+result = process_files_in_directory(folder_path)
+print(result)
